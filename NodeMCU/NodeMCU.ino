@@ -27,8 +27,8 @@
  * Este servidor no funciona correctamente en las redes del TEC,
  * se recomienda crear un hotspot con el celular
  */
-const char* ssid = "WiFiCar";
-const char* password = "pass1234";
+const char* ssid = "Mi10T";
+const char* password = "DaddyIssues";
 
 
 // servidor con el puerto y variable con la maxima cantidad de 
@@ -40,7 +40,7 @@ WiFiClient serverClients[MAX_SRV_CLIENTS];
  * Intervalo de tiempo que se espera para comprobar que haya un nuevo mensaje
  */
 unsigned long previousMillis = 0, temp = 0;
-const long interval = 100;
+const long interval = 60;
 
 /*
  * Pin donde está conectado el sensor de luz
@@ -255,6 +255,16 @@ String implementar(String llave, String valor){
     Serial.print("Move....: ");
     Serial.println(valor);
     //# AGREGAR PARA CÓDIGO PARA MOVER EL CARRO HACIA DELANTE Y ATRAS
+    int speed = valor.toInt();
+    if (speed > 0){
+      digitalWrite(In1, HIGH);
+      digitalWrite(In2, LOW);
+
+    } else {
+      digitalWrite(In1, LOW);
+      digitalWrite(In2, HIGH);
+    }
+    analogWrite(EnA, abs(speed));
   }
  
   else if(llave == "dir"){
@@ -262,14 +272,20 @@ String implementar(String llave, String valor){
       case 1:
         Serial.println("Girando derecha");
         //# AGREGAR CÓDIGO PARA GIRAR DERECHA
+        digitalWrite(In3, HIGH);
+        digitalWrite(In4, LOW);
         break;
       case -1:
         Serial.println("Girando izquierda");
         //# AGREGAR CÓDIGO PARA GIRAR IZQUIERDA
+        digitalWrite(In3, LOW);
+        digitalWrite(In4, HIGH);
         break;
        default:
         Serial.println("directo");
         //# AGREGAR CÓDIGO PARA NO GIRAR 
+        digitalWrite(In3, LOW);
+        digitalWrite(In4, LOW);
         break;
     }
   }
@@ -283,18 +299,22 @@ String implementar(String llave, String valor){
       case 'f':
         Serial.println("Luces frontales");
         //# AGREGAR CÓDIGO PARA ENCENDER LUCES FRONTALES
+        data |= B00000001;
         break;
       case 'b':
         Serial.println("Luces traseras");
         //# AGREGAR CÓDIGO PARA ENCENDER O APAGAR LUCES TRASERAS
+        data |= B00000010;
         break;
       case 'l':
         Serial.println("Luces izquierda");
         //# AGREGAR CÓDIGO PARA ENCENDER O APAGAR DIRECCIONAL IZQUIERDA
+        data |= B00000100;
         break;
       case 'r':
         Serial.println("Luces derechas");
         //# AGREGAR PARA CÓDIGO PARA ENCENDER O APAGAR DIRECCIONAL DERECHA
+        data |= B00001000;
         break;
       /**
        * # AGREGAR CASOS CON EL FORMATO l[caracter]:valor;
