@@ -18,7 +18,7 @@
 //Cantidad maxima de clientes es 1
 #define MAX_SRV_CLIENTS 1
 //Puerto por el que escucha el servidor
-#define PORT 7070
+#define PORT 1900
 
 /*
  * ssid: Nombre de la Red a la que se va a conectar el Arduino
@@ -110,8 +110,8 @@ void setup() {
   pinMode(ldr,INPUT);
 
   // ip estática para el servidor
-  IPAddress ip(192,168,43,200);
-  IPAddress gateway(192,168,43,1);
+  IPAddress ip(192,168,229,12);
+  IPAddress gateway(192,168,229,33);
   IPAddress subnet(255,255,255,0);
 
   WiFi.config(ip, gateway, subnet);
@@ -283,18 +283,34 @@ String implementar(String llave, String valor){
       case 'f':
         Serial.println("Luces frontales");
         //# AGREGAR CÓDIGO PARA ENCENDER LUCES FRONTALES
+<<<<<<< Updated upstream
+=======
+        data = B00000001;
+>>>>>>> Stashed changes
         break;
       case 'b':
         Serial.println("Luces traseras");
         //# AGREGAR CÓDIGO PARA ENCENDER O APAGAR LUCES TRASERAS
+<<<<<<< Updated upstream
+=======
+        data = B00000010;
+>>>>>>> Stashed changes
         break;
       case 'l':
         Serial.println("Luces izquierda");
         //# AGREGAR CÓDIGO PARA ENCENDER O APAGAR DIRECCIONAL IZQUIERDA
+<<<<<<< Updated upstream
+=======
+        data = B00000100;
+>>>>>>> Stashed changes
         break;
       case 'r':
         Serial.println("Luces derechas");
         //# AGREGAR PARA CÓDIGO PARA ENCENDER O APAGAR DIRECCIONAL DERECHA
+<<<<<<< Updated upstream
+=======
+        data = B00001000;
+>>>>>>> Stashed changes
         break;
       /**
        * # AGREGAR CASOS CON EL FORMATO l[caracter]:valor;
