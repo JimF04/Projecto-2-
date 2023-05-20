@@ -299,22 +299,22 @@ String implementar(String llave, String valor){
       case 'f':
         Serial.println("Luces frontales");
         //# AGREGAR CÓDIGO PARA ENCENDER LUCES FRONTALES
-        data |= B00000001;
+        data = B00000001;
         break;
       case 'b':
         Serial.println("Luces traseras");
         //# AGREGAR CÓDIGO PARA ENCENDER O APAGAR LUCES TRASERAS
-        data |= B00000010;
+        data = B00000010;
         break;
       case 'l':
         Serial.println("Luces izquierda");
         //# AGREGAR CÓDIGO PARA ENCENDER O APAGAR DIRECCIONAL IZQUIERDA
-        data |= B00000100;
+        data = B00000100;
         break;
       case 'r':
         Serial.println("Luces derechas");
         //# AGREGAR PARA CÓDIGO PARA ENCENDER O APAGAR DIRECCIONAL DERECHA
-        data |= B00001000;
+        data = B00001000;
         break;
       /**
        * # AGREGAR CASOS CON EL FORMATO l[caracter]:valor;
