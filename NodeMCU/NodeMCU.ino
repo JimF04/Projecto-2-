@@ -27,8 +27,8 @@
  * Este servidor no funciona correctamente en las redes del TEC,
  * se recomienda crear un hotspot con el celular
  */
-const char* ssid = "WiFiCar";
-const char* password = "pass1234";
+const char* ssid = "Mi 10T";
+const char* password = "DaddyIssues";
 
 
 // servidor con el puerto y variable con la maxima cantidad de 
