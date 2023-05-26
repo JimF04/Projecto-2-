@@ -27,8 +27,8 @@
  * Este servidor no funciona correctamente en las redes del TEC,
  * se recomienda crear un hotspot con el celular
  */
-const char* ssid = "Iphone Jimmy";
-const char* password = "Computadores123";
+const char* ssid = "Mi 10T";
+const char* password = "DaddyIssues";
 
 
 // servidor con el puerto y variable con la maxima cantidad de 
@@ -40,7 +40,7 @@ WiFiClient serverClients[MAX_SRV_CLIENTS];
  * Intervalo de tiempo que se espera para comprobar que haya un nuevo mensaje
  */
 unsigned long previousMillis = 0, temp = 0;
-const long interval = 60;
+const long interval = 100;
 
 /*
  * Pin donde está conectado el sensor de luz
@@ -78,8 +78,8 @@ const long interval = 60;
 #define In1 D3 // D4 en HIGH : retroceder
 #define In2 D2 // D3 en HIGH : avanzar
 #define In3 D1 // 
-#define EnB D0 // 
-#define In4 D5 // 0 para ir hacia adelante
+#define EnB D5 // 
+#define In4 D0 // 0 para ir hacia adelante
 
 
 
@@ -110,9 +110,9 @@ void setup() {
   pinMode(ldr,INPUT);
 
   // ip estática para el servidor
-  IPAddress ip(172,20,10,2);
-  IPAddress gateway(172,20,10,1);
-  IPAddress subnet(255,255,255,240);
+  IPAddress ip(192,168,215,59);
+  IPAddress gateway(192,168,215,55);
+  IPAddress subnet(255,255,255,0);
 
   WiFi.config(ip, gateway, subnet);
 
@@ -260,11 +260,15 @@ String implementar(String llave, String valor){
       digitalWrite(In1, HIGH);
       digitalWrite(In2, LOW);
 
-    } else {
+    } else if (speed < 0) {
       digitalWrite(In1, LOW);
       digitalWrite(In2, HIGH);
+      speed = -speed;
+    } else if (speed == 0) {
+      digitalWrite(In1, LOW);
+      digitalWrite(In2, LOW);
     }
-    analogWrite(EnA, abs(speed));
+    analogWrite(EnA, speed);
   }
  
   else if(llave == "dir"){
@@ -278,12 +282,14 @@ String implementar(String llave, String valor){
       case -1:
         Serial.println("Girando izquierda");
         //# AGREGAR CÓDIGO PARA GIRAR IZQUIERDA
+        digitalWrite(EnB, HIGH);
         digitalWrite(In3, LOW);
         digitalWrite(In4, HIGH);
         break;
-       default:
+      case 0:
         Serial.println("directo");
         //# AGREGAR CÓDIGO PARA NO GIRAR 
+        digitalWrite(EnB, LOW);
         digitalWrite(In3, LOW);
         digitalWrite(In4, LOW);
         break;
@@ -299,22 +305,22 @@ String implementar(String llave, String valor){
       case 'f':
         Serial.println("Luces frontales");
         //# AGREGAR CÓDIGO PARA ENCENDER LUCES FRONTALES
-        data = B00000001;
+        data = B11111110;
         break;
       case 'b':
         Serial.println("Luces traseras");
         //# AGREGAR CÓDIGO PARA ENCENDER O APAGAR LUCES TRASERAS
-        data = B00000010;
+        data = B11111101;
         break;
       case 'l':
         Serial.println("Luces izquierda");
         //# AGREGAR CÓDIGO PARA ENCENDER O APAGAR DIRECCIONAL IZQUIERDA
-        data = B00000100;
+        data = B11111011;
         break;
       case 'r':
         Serial.println("Luces derechas");
         //# AGREGAR PARA CÓDIGO PARA ENCENDER O APAGAR DIRECCIONAL DERECHA
-        data = B00001000;
+        data = B11110111;
         break;
       /**
        * # AGREGAR CASOS CON EL FORMATO l[caracter]:valor;
