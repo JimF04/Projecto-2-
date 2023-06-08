@@ -18,7 +18,7 @@
 //Cantidad maxima de clientes es 1
 #define MAX_SRV_CLIENTS 1
 //Puerto por el que escucha el servidor
-#define PORT 1900
+#define PORT 7070
 
 /*
  * ssid: Nombre de la Red a la que se va a conectar el Arduino
@@ -27,8 +27,8 @@
  * Este servidor no funciona correctamente en las redes del TEC,
  * se recomienda crear un hotspot con el celular
  */
-const char* ssid = "Mi 10T";
-const char* password = "DaddyIssues";
+const char* ssid = "Vektor_71C8";
+const char* password = "12345678";
 
 
 // servidor con el puerto y variable con la maxima cantidad de 
@@ -110,8 +110,8 @@ void setup() {
   pinMode(ldr,INPUT);
 
   // ip estática para el servidor
-  IPAddress ip(192,168,215,59);
-  IPAddress gateway(192,168,215,55);
+  IPAddress ip(192,168,5,162);
+  IPAddress gateway(192,168,5,1);
   IPAddress subnet(255,255,255,0);
 
   WiFi.config(ip, gateway, subnet);
@@ -234,6 +234,19 @@ void procesar(String input, String * output){
      *  
      * } 
      */
+
+    else if(comando == "circle"){
+      *output = circleMovement();
+    }
+    else if(comando == "infinite"){
+      *output = infiniteMovement();
+    }
+    else if(comando == "zigzag"){
+      *output = zigzagMovement();
+    }
+    else if(comando == "special"){
+      *output = especialMovement();
+    }
     else{
       Serial.print("Comando no reconocido. Solo presenta llave");
       *output = "Undefined key value: " + comando+";";
@@ -276,20 +289,21 @@ String implementar(String llave, String valor){
       case 1:
         Serial.println("Girando derecha");
         //# AGREGAR CÓDIGO PARA GIRAR DERECHA
+        digitalWrite(EnB, LOW);
         digitalWrite(In3, HIGH);
         digitalWrite(In4, LOW);
         break;
       case -1:
         Serial.println("Girando izquierda");
         //# AGREGAR CÓDIGO PARA GIRAR IZQUIERDA
-        digitalWrite(EnB, HIGH);
+        digitalWrite(EnB, LOW);
         digitalWrite(In3, LOW);
         digitalWrite(In4, HIGH);
         break;
       case 0:
         Serial.println("directo");
         //# AGREGAR CÓDIGO PARA NO GIRAR 
-        digitalWrite(EnB, LOW);
+        digitalWrite(EnB, HIGH);
         digitalWrite(In3, LOW);
         digitalWrite(In4, LOW);
         break;
@@ -358,4 +372,205 @@ String getSense(){
   Serial.print("Sensing: ");
   Serial.println(sense);
   return sense;
+}
+
+String circleMovement() {
+  int speed = 500;
+  int duration = 2000;
+
+  digitalWrite(In1, HIGH);
+  digitalWrite(In2, LOW);
+  analogWrite(EnA, speed);
+
+  digitalWrite(In3, HIGH);
+  digitalWrite(In4, LOW);
+  digitalWrite(In1, HIGH);
+  digitalWrite(In2, LOW);
+  analogWrite(EnA, speed);
+
+  delay(duration);
+
+  digitalWrite(EnB, HIGH);
+  digitalWrite(In3, LOW);
+  digitalWrite(In4, LOW);
+  analogWrite(EnA, 0);
+
+  return "";
+}
+
+String infiniteMovement() {
+  int speed = 500;
+  int duration = 2000;
+
+  digitalWrite(In1, HIGH);
+  digitalWrite(In2, LOW);
+  analogWrite(EnA, speed);
+
+  digitalWrite(In3, HIGH);
+  digitalWrite(In4, LOW);
+  digitalWrite(In1, HIGH);
+  digitalWrite(In2, LOW);
+  analogWrite(EnA, speed);
+
+  delay(duration);
+
+  digitalWrite(EnB, LOW);
+  digitalWrite(In3, HIGH);
+  digitalWrite(In4, LOW);
+  digitalWrite(In1, LOW);
+  digitalWrite(In2, LOW);
+  analogWrite(EnA, speed);
+
+  delay(duration);
+
+  digitalWrite(EnB, HIGH);
+  digitalWrite(In3, LOW);
+  digitalWrite(In4, LOW);
+  digitalWrite(In1, HIGH);
+  digitalWrite(In2, LOW);
+  analogWrite(EnA, speed);
+
+  delay(duration);
+
+  digitalWrite(EnB, LOW);
+  digitalWrite(In3, LOW);
+  digitalWrite(In4, HIGH);
+  digitalWrite(In1, HIGH);
+  digitalWrite(In2, LOW);
+  analogWrite(EnA, speed);
+
+  delay(duration);
+
+  digitalWrite(EnB, HIGH);
+  digitalWrite(In3, LOW);
+  digitalWrite(In4, LOW);
+  digitalWrite(In1, HIGH);
+  digitalWrite(In2, LOW);
+  analogWrite(EnA, speed);
+
+  delay(duration);
+
+  digitalWrite(EnB, LOW);
+  digitalWrite(In3, HIGH);
+  digitalWrite(In4, LOW);
+  digitalWrite(In1, LOW);
+  digitalWrite(In2, LOW);
+  analogWrite(EnA, speed);
+  return "";
+}
+
+String zigzagMovement(){
+  int speed = 500;
+  int duration = 2000;
+
+  digitalWrite(In1, HIGH);
+  digitalWrite(In2, LOW);
+  analogWrite(EnA, speed);
+
+  delay(duration);
+
+  digitalWrite(In1, LOW);
+  digitalWrite(In2, LOW);
+  analogWrite(EnA, 0);
+
+  digitalWrite(In3, HIGH);
+  digitalWrite(In4, LOW);
+  digitalWrite(In1, HIGH);
+  digitalWrite(In2, LOW);
+  analogWrite(EnA, speed);
+
+  delay(duration);
+
+  digitalWrite(EnB, HIGH);
+  digitalWrite(In3, LOW);
+  digitalWrite(In4, LOW);
+  analogWrite(EnA, 0);
+
+  digitalWrite(In1, HIGH);
+  digitalWrite(In2, LOW);
+  analogWrite(EnA, speed);
+  return "";
+}
+
+String especialMovement() {
+  int speed = 500;
+  int duration = 2000;
+
+  // Hacia delante
+  digitalWrite(In1, HIGH);
+  digitalWrite(In2, LOW);
+  analogWrite(EnA, speed);
+
+  delay(duration);
+
+  // Movimiento hacia atras
+  digitalWrite(In1, LOW);
+  digitalWrite(In2, HIGH);
+  analogWrite(EnA, speed);
+
+  delay(2 * duration);
+
+  // Regreso al punto inicial
+  digitalWrite(In1, HIGH);
+  digitalWrite(In2, LOW);
+  analogWrite(EnA, speed);
+
+  delay(duration);
+
+  digitalWrite(In1, LOW);
+  digitalWrite(In2, LOW);
+  analogWrite(EnA, 0);
+
+  delay(duration);
+
+  // Movimiento hacia la izquierda y adelante
+  digitalWrite(EnB, LOW);
+  digitalWrite(In3, HIGH);
+  digitalWrite(In4, LOW);
+  digitalWrite(In1, HIGH);
+  digitalWrite(In2, LOW);
+  analogWrite(EnA, speed);
+
+  delay(duration);
+
+  // Regreso al punto inicial
+
+  digitalWrite(In1, LOW);
+  digitalWrite(In2, HIGH);
+  analogWrite(EnA, speed);
+
+  delay(duration);
+
+  digitalWrite(EnB, HIGH);
+  digitalWrite(In3, LOW);
+  digitalWrite(In4, LOW);
+  digitalWrite(In1, LOW);
+  digitalWrite(In2, LOW);
+  analogWrite(EnA, 0);
+
+  // Movimiento hacia la derecha y adelante
+  digitalWrite(EnB, LOW);
+  digitalWrite(In3, LOW);
+  digitalWrite(In4, HIGH);
+  digitalWrite(In1, HIGH);
+  digitalWrite(In2, LOW);
+  analogWrite(EnA, speed);
+
+  delay(duration);
+
+  // Regreso al punto inicial
+
+  digitalWrite(In1, LOW);
+  digitalWrite(In2, HIGH);
+  analogWrite(EnA, speed);
+
+  delay(duration);
+
+  digitalWrite(EnB, HIGH);
+  digitalWrite(In3, LOW);
+  digitalWrite(In4, LOW);
+  digitalWrite(In1, LOW);
+  digitalWrite(In2, LOW);
+  analogWrite(EnA, 0);
+  return "";
 }
