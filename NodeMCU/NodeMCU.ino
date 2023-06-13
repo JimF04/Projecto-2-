@@ -27,8 +27,8 @@
  * Este servidor no funciona correctamente en las redes del TEC,
  * se recomienda crear un hotspot con el celular
  */
-const char* ssid = "Vektor_71C8";
-const char* password = "12345678";
+const char* ssid = "Mi 10T";
+const char* password = "Moonlight";
 
 
 // servidor con el puerto y variable con la maxima cantidad de 
@@ -110,8 +110,8 @@ void setup() {
   pinMode(ldr,INPUT);
 
   // ip estática para el servidor
-  IPAddress ip(192,168,5,162);
-  IPAddress gateway(192,168,5,1);
+  IPAddress ip(192,168,71,69);
+  IPAddress gateway(192,168,71,181);
   IPAddress subnet(255,255,255,0);
 
   WiFi.config(ip, gateway, subnet);
@@ -270,14 +270,17 @@ String implementar(String llave, String valor){
     //# AGREGAR PARA CÓDIGO PARA MOVER EL CARRO HACIA DELANTE Y ATRAS
     int speed = valor.toInt();
     if (speed > 0){
+      //si speed es mayor que 0, mover hacia delante
       digitalWrite(In1, HIGH);
       digitalWrite(In2, LOW);
 
     } else if (speed < 0) {
+      //si speed es menor que 0, mover hacia atras
       digitalWrite(In1, LOW);
       digitalWrite(In2, HIGH);
       speed = -speed;
     } else if (speed == 0) {
+      //si speed es igual a 0, no se mueve
       digitalWrite(In1, LOW);
       digitalWrite(In2, LOW);
     }
@@ -289,21 +292,21 @@ String implementar(String llave, String valor){
       case 1:
         Serial.println("Girando derecha");
         //# AGREGAR CÓDIGO PARA GIRAR DERECHA
-        digitalWrite(EnB, LOW);
+        digitalWrite(EnB, HIGH);
         digitalWrite(In3, HIGH);
         digitalWrite(In4, LOW);
         break;
       case -1:
         Serial.println("Girando izquierda");
         //# AGREGAR CÓDIGO PARA GIRAR IZQUIERDA
-        digitalWrite(EnB, LOW);
+        digitalWrite(EnB, HIGH);
         digitalWrite(In3, LOW);
         digitalWrite(In4, HIGH);
         break;
       case 0:
         Serial.println("directo");
         //# AGREGAR CÓDIGO PARA NO GIRAR 
-        digitalWrite(EnB, HIGH);
+        digitalWrite(EnB, LOW);
         digitalWrite(In3, LOW);
         digitalWrite(In4, LOW);
         break;
@@ -319,22 +322,22 @@ String implementar(String llave, String valor){
       case 'f':
         Serial.println("Luces frontales");
         //# AGREGAR CÓDIGO PARA ENCENDER LUCES FRONTALES
-        data = B11111110;
+        data = B00001100;
         break;
       case 'b':
         Serial.println("Luces traseras");
         //# AGREGAR CÓDIGO PARA ENCENDER O APAGAR LUCES TRASERAS
-        data = B11111101;
+        data = B11000000;
         break;
       case 'l':
         Serial.println("Luces izquierda");
         //# AGREGAR CÓDIGO PARA ENCENDER O APAGAR DIRECCIONAL IZQUIERDA
-        data = B11111011;
+        data = B00000010;
         break;
       case 'r':
         Serial.println("Luces derechas");
         //# AGREGAR PARA CÓDIGO PARA ENCENDER O APAGAR DIRECCIONAL DERECHA
-        data = B11110111;
+        data = B00000001;
         break;
       /**
        * # AGREGAR CASOS CON EL FORMATO l[caracter]:valor;
@@ -346,6 +349,7 @@ String implementar(String llave, String valor){
         break;
     }
     //data VARIABLE QUE DEFINE CUALES LUCES SE ENCIENDEN Y CUALES SE APAGAN
+    digitalWrite(ab, LOW);
     shiftOut(ab, clk, LSBFIRST, data);
   }
   /**
@@ -363,214 +367,161 @@ String implementar(String llave, String valor){
  */
 String getSense(){
   //# EDITAR CÓDIGO PARA LEER LOS VALORES DESEADOS
-  int batteryLvl = -1;
-  int light = -1;
+  int batteryValue = analogRead(A0);
+  float voltaje = batteryValue * (3.3 / 1023.0);
+
+  //Calcular el nivel de bateria 
+
+  float batteryLvl = (voltaje / 6.0) * 100.0;
+
+  batteryLvl = constrain(batteryLvl, 1, 100);
+
+  int light = analogRead(ldr);
 
   // EQUIVALENTE A UTILIZAR STR.FORMAT EN PYTHON, %d -> valor decimal
   char sense [16];
-  sprintf(sense, "blvl:%d;ldr:%d;", batteryLvl, light);
+  sprintf(sense, "blvl:%d;ldr:%d;", (int)batteryLvl, light);
   Serial.print("Sensing: ");
   Serial.println(sense);
   return sense;
 }
 
 String circleMovement() {
-  int speed = 500;
-  int duration = 2000;
-
-  digitalWrite(In1, HIGH);
-  digitalWrite(In2, LOW);
-  analogWrite(EnA, speed);
-
-  digitalWrite(In3, HIGH);
-  digitalWrite(In4, LOW);
-  digitalWrite(In1, HIGH);
-  digitalWrite(In2, LOW);
-  analogWrite(EnA, speed);
-
-  delay(duration);
-
+  int speed = -1000;
+  int duration = 6000;
+  //Mover las ruedas a la izquierda
   digitalWrite(EnB, HIGH);
   digitalWrite(In3, LOW);
+  digitalWrite(In4, HIGH);
+  //Mover hacia delante
+  digitalWrite(In1, LOW);
+  digitalWrite(In2, HIGH);
+  speed = -speed;
+  analogWrite(EnA, speed);
+  //Mover a un cierto tiempo
+  delay(duration);
+  //Dejar de mover y mover las ruedas al medio
+  digitalWrite(EnB, LOW);
+  digitalWrite(In3, LOW);
   digitalWrite(In4, LOW);
-  analogWrite(EnA, 0);
+  digitalWrite(In1, LOW);
+  digitalWrite(In2, LOW);
+
+  return "";
+}
+
+String zigzagMovement() {
+  int speed = 1000;
+  int duration = 6000;
+  int zigzagDuration = 1000; // Duración de cada zigzag (izquierda y derecha)
+
+  for (int i = 0; i < 3; i++) { // Realizar 3 ciclos de zigzag
+    // Zigzag hacia la izquierda
+    digitalWrite(EnB, HIGH);
+    digitalWrite(In3, HIGH);
+    digitalWrite(In4, LOW);
+    digitalWrite(In1, LOW);
+    digitalWrite(In2, HIGH);
+    analogWrite(EnA, speed);
+    delay(zigzagDuration);
+
+    // Zigzag hacia la derecha
+    digitalWrite(EnB, HIGH);
+    digitalWrite(In3, LOW);
+    digitalWrite(In4, HIGH);
+    digitalWrite(In1, LOW);
+    digitalWrite(In2, HIGH);
+    analogWrite(EnA, speed);
+    delay(zigzagDuration);
+  }
+
+  // Detener el movimiento y dejar las ruedas en posición central
+  digitalWrite(EnB, LOW);
+  digitalWrite(In3, LOW);
+  digitalWrite(In4, LOW);
+  digitalWrite(In1, LOW);
+  digitalWrite(In2, LOW);
+
+  return "";
+}
+
+
+String especialMovement() {
+  int speed = 1000;
+  int duration = 6000;
+  //Mueve las llantas hacia la izquierda
+  digitalWrite(EnB, HIGH);
+  digitalWrite(In3, LOW);
+  digitalWrite(In4, HIGH);
+  //Retrocede el carro
+  digitalWrite(In1, HIGH);
+  digitalWrite(In2, LOW);
+  analogWrite(EnA, speed);
+  //Se mueve a una velocidad definida
+  delay(duration);
+  //Vovler al estado original
+  digitalWrite(EnB, LOW);
+  digitalWrite(In3, LOW);
+  digitalWrite(In4, LOW);
+  digitalWrite(In1, LOW);
+  digitalWrite(In2, LOW);
 
   return "";
 }
 
 String infiniteMovement() {
-  int speed = 500;
-  int duration = 2000;
+  int speed = 1000;
+  int duration = 6000;
+  int zigzagDuration = 1000; // Duración de cada zigzag (izquierda y derecha)
 
-  digitalWrite(In1, HIGH);
-  digitalWrite(In2, LOW);
-  analogWrite(EnA, speed);
+  for (int i = 0; i < 4; i++) { // Realizar 4 ciclos de movimiento
+    // Movimiento en forma de círculo hacia la izquierda
+    digitalWrite(EnB, HIGH);
+    digitalWrite(In3, LOW);
+    digitalWrite(In4, HIGH);
+    digitalWrite(In1, LOW);
+    digitalWrite(In2, HIGH);
+    speed = -speed;
+    analogWrite(EnA, speed);
+    delay(duration);
 
-  digitalWrite(In3, HIGH);
-  digitalWrite(In4, LOW);
-  digitalWrite(In1, HIGH);
-  digitalWrite(In2, LOW);
-  analogWrite(EnA, speed);
+    // Detener el movimiento circular
+    digitalWrite(EnB, LOW);
+    digitalWrite(In3, LOW);
+    digitalWrite(In4, LOW);
+    digitalWrite(In1, LOW);
+    digitalWrite(In2, LOW);
+    delay(1000); // Esperar 1 segundo en cada cambio de dirección
 
-  delay(duration);
+    // Movimiento en zigzag
+    for (int j = 0; j < 2; j++) { // Realizar 2 ciclos de zigzag (izquierda y derecha)
+      // Zigzag hacia la izquierda
+      digitalWrite(EnB, HIGH);
+      digitalWrite(In3, HIGH);
+      digitalWrite(In4, LOW);
+      digitalWrite(In1, LOW);
+      digitalWrite(In2, HIGH);
+      analogWrite(EnA, speed);
+      delay(zigzagDuration);
 
-  digitalWrite(EnB, LOW);
-  digitalWrite(In3, HIGH);
-  digitalWrite(In4, LOW);
-  digitalWrite(In1, LOW);
-  digitalWrite(In2, LOW);
-  analogWrite(EnA, speed);
+      // Zigzag hacia la derecha
+      digitalWrite(EnB, HIGH);
+      digitalWrite(In3, LOW);
+      digitalWrite(In4, HIGH);
+      digitalWrite(In1, LOW);
+      digitalWrite(In2, HIGH);
+      analogWrite(EnA, speed);
+      delay(zigzagDuration);
+    }
 
-  delay(duration);
+    // Detener el movimiento en zigzag
+    digitalWrite(EnB, LOW);
+    digitalWrite(In3, LOW);
+    digitalWrite(In4, LOW);
+    digitalWrite(In1, LOW);
+    digitalWrite(In2, LOW);
+    delay(1000); // Esperar 1 segundo antes de iniciar el siguiente ciclo
+  }
 
-  digitalWrite(EnB, HIGH);
-  digitalWrite(In3, LOW);
-  digitalWrite(In4, LOW);
-  digitalWrite(In1, HIGH);
-  digitalWrite(In2, LOW);
-  analogWrite(EnA, speed);
-
-  delay(duration);
-
-  digitalWrite(EnB, LOW);
-  digitalWrite(In3, LOW);
-  digitalWrite(In4, HIGH);
-  digitalWrite(In1, HIGH);
-  digitalWrite(In2, LOW);
-  analogWrite(EnA, speed);
-
-  delay(duration);
-
-  digitalWrite(EnB, HIGH);
-  digitalWrite(In3, LOW);
-  digitalWrite(In4, LOW);
-  digitalWrite(In1, HIGH);
-  digitalWrite(In2, LOW);
-  analogWrite(EnA, speed);
-
-  delay(duration);
-
-  digitalWrite(EnB, LOW);
-  digitalWrite(In3, HIGH);
-  digitalWrite(In4, LOW);
-  digitalWrite(In1, LOW);
-  digitalWrite(In2, LOW);
-  analogWrite(EnA, speed);
-  return "";
-}
-
-String zigzagMovement(){
-  int speed = 500;
-  int duration = 2000;
-
-  digitalWrite(In1, HIGH);
-  digitalWrite(In2, LOW);
-  analogWrite(EnA, speed);
-
-  delay(duration);
-
-  digitalWrite(In1, LOW);
-  digitalWrite(In2, LOW);
-  analogWrite(EnA, 0);
-
-  digitalWrite(In3, HIGH);
-  digitalWrite(In4, LOW);
-  digitalWrite(In1, HIGH);
-  digitalWrite(In2, LOW);
-  analogWrite(EnA, speed);
-
-  delay(duration);
-
-  digitalWrite(EnB, HIGH);
-  digitalWrite(In3, LOW);
-  digitalWrite(In4, LOW);
-  analogWrite(EnA, 0);
-
-  digitalWrite(In1, HIGH);
-  digitalWrite(In2, LOW);
-  analogWrite(EnA, speed);
-  return "";
-}
-
-String especialMovement() {
-  int speed = 500;
-  int duration = 2000;
-
-  // Hacia delante
-  digitalWrite(In1, HIGH);
-  digitalWrite(In2, LOW);
-  analogWrite(EnA, speed);
-
-  delay(duration);
-
-  // Movimiento hacia atras
-  digitalWrite(In1, LOW);
-  digitalWrite(In2, HIGH);
-  analogWrite(EnA, speed);
-
-  delay(2 * duration);
-
-  // Regreso al punto inicial
-  digitalWrite(In1, HIGH);
-  digitalWrite(In2, LOW);
-  analogWrite(EnA, speed);
-
-  delay(duration);
-
-  digitalWrite(In1, LOW);
-  digitalWrite(In2, LOW);
-  analogWrite(EnA, 0);
-
-  delay(duration);
-
-  // Movimiento hacia la izquierda y adelante
-  digitalWrite(EnB, LOW);
-  digitalWrite(In3, HIGH);
-  digitalWrite(In4, LOW);
-  digitalWrite(In1, HIGH);
-  digitalWrite(In2, LOW);
-  analogWrite(EnA, speed);
-
-  delay(duration);
-
-  // Regreso al punto inicial
-
-  digitalWrite(In1, LOW);
-  digitalWrite(In2, HIGH);
-  analogWrite(EnA, speed);
-
-  delay(duration);
-
-  digitalWrite(EnB, HIGH);
-  digitalWrite(In3, LOW);
-  digitalWrite(In4, LOW);
-  digitalWrite(In1, LOW);
-  digitalWrite(In2, LOW);
-  analogWrite(EnA, 0);
-
-  // Movimiento hacia la derecha y adelante
-  digitalWrite(EnB, LOW);
-  digitalWrite(In3, LOW);
-  digitalWrite(In4, HIGH);
-  digitalWrite(In1, HIGH);
-  digitalWrite(In2, LOW);
-  analogWrite(EnA, speed);
-
-  delay(duration);
-
-  // Regreso al punto inicial
-
-  digitalWrite(In1, LOW);
-  digitalWrite(In2, HIGH);
-  analogWrite(EnA, speed);
-
-  delay(duration);
-
-  digitalWrite(EnB, HIGH);
-  digitalWrite(In3, LOW);
-  digitalWrite(In4, LOW);
-  digitalWrite(In1, LOW);
-  digitalWrite(In2, LOW);
-  analogWrite(EnA, 0);
   return "";
 }

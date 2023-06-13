@@ -91,25 +91,43 @@ def get_log():
 p = Thread(target=get_log)
 p.start()
 
-def send_delante():
+def send_delante(event=None):
+    """
+    Función para enviar al carro para que mueva hacia delante a una velocidad determinada.
+    """
     myCar.send("dir:0;")
-    myCar.send("pwn:500;")
+    myCar.send("pwm:-1000;")
 
-def send_reset():
+def send_reset(event=None):
+    """
+    Función para resetear el carro para que esté al estado inicial.
+    """
     myCar.send("dir:0;")
-    myCar.send("pwn:0;")
+    myCar.send("pwm:0;")
 
-def send_atras():
+def send_atras(event=None):
+    """
+    Función para enviar al carro para que mueva hacia atrás a una velocidad determinada.
+    """
     myCar.send("dir:0;")
-    myCar.send("pwn:-500;")
+    myCar.send("pwm:1000;")
 
-def send_izquierda():
+def send_izquierda(event=None):
+    """
+    Función para enviar al carro para que gire a la izquierda
+    """
     myCar.send("dir:-1;")
 
-def send_derecha():
+def send_derecha(event=None):
+    """
+    Función para enviar al carro para que gire a la derecha
+    """
     myCar.send("dir:1;")
 
-def send_lr():
+def send_lr(event=None):
+    """
+    Función para enviar al carro para que encienda la luz direccional derecha
+    """
     global lr_status
     if lr_status == 0:
         myCar.send("lr:1;")
@@ -118,7 +136,10 @@ def send_lr():
         myCar.send("lr:0;")
         lr_status = 0
 
-def send_ll():
+def send_ll(event=None):
+    """
+    Función para enviar al carro para que encienda la luz direccional izquierda
+    """
     global ll_status
     if ll_status == 0:
         myCar.send("ll:1;")
@@ -127,7 +148,10 @@ def send_ll():
         myCar.send("ll:0;")
         ll_status = 0
 
-def send_lf():
+def send_lf(event=None):
+    """
+    Función para enviar al carro para que encienda las luces frontales
+    """
     global lf_status
     if lf_status == 0:
         myCar.send("lf:1;")
@@ -136,7 +160,10 @@ def send_lf():
         myCar.send("lf:0;")
         lf_status = 0
 
-def send_lb():
+def send_lb(event=None):
+    """
+    Función para enviar al carro para que encienda las luces traseras
+    """
     global lb_status
     if lb_status == 0:
         myCar.send("lb:1;")
@@ -145,23 +172,35 @@ def send_lb():
         myCar.send("lb:0;")
         lb_status = 0
 
-def send_blvl():
-    myCar.send("blvl;")
+def send_sense(event=None):
+    """
+    Función para enviar al carro para que retorne el porcentaje de bateria restante y la luz
+    """
+    myCar.send("sense;")
 
-def send_ldr():
-    myCar.send("ldr;")
-
-def send_circle():
+def send_circle(event=None):
+    """
+    Función para enviar al carro para que se mueva de manera circular
+    """
     myCar.send("circle;")
 
-def send_infinite():
+def send_infinite(event=None):
+    """
+    Función para enviar al carro para que se mueva en infito o en 8
+    """
     myCar.send("infinite;")
 
-def send_zigzag():
+def send_zigzag(event=None):
+    """
+    Función para enviar al carro para que se mueva en zigzag
+    """
     myCar.send("zigzag;")
 
-def send_special():
-    myCar.send("especial;")
+def send_special(event=None):
+    """
+    Función para enviar al carro para que se mueva su movimiento especial definida por el programador
+    """
+    myCar.send("special;")
 
 
 #           ____________________________
@@ -194,11 +233,8 @@ lb_button.place(x=300, y=200)
 lr_button = Button(C_root, text="LR", command=send_lr)
 lr_button.place(x=300, y=300)
 
-blvl_button = Button(C_root, text="Battery", command=send_blvl)
-blvl_button.place(x=400, y=200)
-
-ldr_button = Button(C_root, text="Light", command=send_ldr)
-ldr_button.place(x=400, y=250)
+sense_button = Button(C_root, text="Sense", command=send_sense)
+sense_button.place(x=400, y=200)
 
 circle_button = Button(C_root, text="Circle", command=send_circle)
 circle_button.place(x=500, y=200)
@@ -211,5 +247,26 @@ zigzag_button.place(x=500, y=300)
 
 special_button = Button(C_root, text="Special", command=send_special)
 special_button.place(x=500, y=350)
+
+
+#           ____________________________
+#__________/Teclas de ventana principal
+
+root.bind("<w>", send_delante)
+root.bind("<s>", send_reset)
+root.bind("<x>", send_atras)
+root.bind("<a>", send_izquierda)
+root.bind("<d>", send_derecha)
+
+root.bind("<q>", send_lf)
+root.bind("<e>", send_lb)
+root.bind("<z>", send_ll)
+root.bind("<c>", send_lr)
+
+root.bind("<v>", send_circle)
+root.bind("<b>", send_zigzag)
+root.bind("<n>", send_infinite)
+root.bind("<m>", send_special)
+root.bind("<f>", send_sense)
 
 root.mainloop()

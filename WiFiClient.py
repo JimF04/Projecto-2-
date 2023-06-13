@@ -48,7 +48,7 @@ class NodeMCU(Thread):
     
     #           ___________________________           
     #__________/Constructor de la clase
-    def __init__(self, ip = '192,168,5,162', port = 7070):
+    def __init__(self, ip = '192.168.71.69', port = 7070):
         Thread.__init__(self)
         self.node_address = (ip,port)
         
