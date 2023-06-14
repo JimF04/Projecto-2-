@@ -15,6 +15,8 @@ Restricciónes: Python3.7
 Ejemplo de como usar el módudo NodeMCU de wifiConnection
 
 """
+
+
 #           _____________________________
 #__________/BIBLIOTECAS
 from tkinter import *               # Tk(), Label, Canvas, Photo
@@ -26,6 +28,7 @@ from tkinter import messagebox      # AskYesNo ()
 import tkinter.scrolledtext as tkscrolled
 ##### Biblioteca para el Carro
 from WiFiClient import NodeMCU
+from tkinter import ttk 
 
 
 #           ____________________________
@@ -49,18 +52,14 @@ lb_status = 0
 
 #           _____________________________________
 #__________/Se titulo de los Cuadros de texto
-L_Titulo = Label(C_root,text="Mensajes Enviados",font=('Agency FB',14),bg='white',fg='blue')
-L_Titulo.place(x=100,y=10)
+
 
 L_Titulo = Label(C_root,text="Respuesta Mensaje",font=('Agency FB',14),bg='white',fg='blue')
-L_Titulo.place(x=490,y=10)
+L_Titulo.place(x=340,y=10)
 
-
-SentCarScrolledTxt = tkscrolled.ScrolledText(C_root, height=10, width=45)
-SentCarScrolledTxt.place(x=10,y=50)
 
 RevCarScrolledTxt = tkscrolled.ScrolledText(C_root, height=10, width=45)
-RevCarScrolledTxt.place(x=400,y=50)
+RevCarScrolledTxt.place(x=250,y=50)
 
 
 #           _____________________________________
@@ -77,10 +76,6 @@ def get_log():
     # Variable del carro que mantiene el hilo de escribir.
     while(myCar.loop):
         while(indice < len(myCar.log)):
-            mnsSend = "[{0}] cmd: {1}\n".format(indice,myCar.log[indice][0])
-            SentCarScrolledTxt.insert(END,mnsSend)
-            SentCarScrolledTxt.see("end")
-
             mnsRecv = "[{0}] result: {1}\n".format(indice,myCar.log[indice][1])
             RevCarScrolledTxt.insert(END, mnsRecv)
             RevCarScrolledTxt.see('end')
@@ -206,47 +201,47 @@ def send_special(event=None):
 #           ____________________________
 #__________/Botones de ventana principal
 
-delante = Button(C_root, text="Delante", command=send_delante)
-delante.place(x=200, y=200)
+delante = ttk.Button(C_root, text="UP", command=send_delante)
+delante.place(x=365, y=200)
 
-reset = Button(C_root, text="Reset", command=send_reset)
-reset.place(x=200, y=250)
+reset = ttk.Button(C_root, text="Reset", command=send_reset)
+reset.place(x=365, y=240)
 
-atras = Button(C_root, text="Atras", command=send_atras)
-atras.place(x=200, y=300)
+atras = ttk.Button(C_root, text="Down", command=send_atras)
+atras.place(x=365, y=290)
 
-izquierda = Button(C_root, text="Izquierda", command=send_izquierda)
-izquierda.place(x=100, y=250)
+izquierda = ttk.Button(C_root, text="Left", command=send_izquierda)
+izquierda.place(x=290, y=240)
 
-derecha = Button(C_root, text="Derecha", command=send_derecha)
-derecha.place(x=300, y=250)
+derecha = ttk.Button(C_root, text="Right", command=send_derecha)
+derecha.place(x=440, y=240)
 
-ll_button = Button(C_root, text="LL", command=send_ll)
-ll_button.place(x=100, y=300)
+ll_button = ttk.Button(C_root, text="LL", command=send_ll)
+ll_button.place(x=290, y=290)
 
-lf_button = Button(C_root, text="LF", command=send_lf)
-lf_button.place(x=100, y=200)
+lf_button = ttk.Button(C_root, text="LF", command=send_lf)
+lf_button.place(x=290, y=200)
 
-lb_button = Button(C_root, text="LB", command=send_lb)
-lb_button.place(x=300, y=200)
+lb_button = ttk.Button(C_root, text="LB", command=send_lb)
+lb_button.place(x=440, y=200)
 
-lr_button = Button(C_root, text="LR", command=send_lr)
-lr_button.place(x=300, y=300)
+lr_button = ttk.Button(C_root, text="LR", command=send_lr)
+lr_button.place(x=440, y=290)
 
-sense_button = Button(C_root, text="Sense", command=send_sense)
-sense_button.place(x=400, y=200)
+sense_button = ttk.Button(C_root, text="Sense", command=send_sense)
+sense_button.place(x=365, y=335)
 
-circle_button = Button(C_root, text="Circle", command=send_circle)
-circle_button.place(x=500, y=200)
+circle_button = ttk.Button(C_root, text="Circle", command=send_circle)
+circle_button.place(x=515, y=200)
 
-infinite_button = Button(C_root, text="Infinite", command=send_infinite)
-infinite_button.place(x=500, y=250)
+infinite_button = ttk.Button(C_root, text="Infinite", command=send_infinite)
+infinite_button.place(x=515, y=240)
 
-zigzag_button = Button(C_root, text="ZigZag", command=send_zigzag)
-zigzag_button.place(x=500, y=300)
+zigzag_button = ttk.Button(C_root, text="ZigZag", command=send_zigzag)
+zigzag_button.place(x=215, y=200)
 
-special_button = Button(C_root, text="Special", command=send_special)
-special_button.place(x=500, y=350)
+special_button = ttk.Button(C_root, text="Special", command=send_special)
+special_button.place(x=215, y=240)
 
 
 #           ____________________________

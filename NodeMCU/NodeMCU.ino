@@ -323,8 +323,10 @@ String implementar(String llave, String valor){
         Serial.println("Luces frontales");
         //# AGREGAR CÓDIGO PARA ENCENDER LUCES FRONTALES
         if (valor.toInt() == 1) {
+          //si recibe 1, encender las luces
           data = B11000000;
         } else if (valor.toInt() == 0) {
+          //si recibe 0, apagar las luces
           data = B00000000;
         }
         break;
@@ -332,8 +334,10 @@ String implementar(String llave, String valor){
         Serial.println("Luces traseras");
         //# AGREGAR CÓDIGO PARA ENCENDER O APAGAR LUCES TRASERAS
         if (valor.toInt() == 1) {
+          //si recibe 1, encender las luces
           data = B00001100;
         } else if (valor.toInt() == 0) {
+          //si recibe 0, apagar las luces
           data = B00000000;
         }
         break;
@@ -341,8 +345,10 @@ String implementar(String llave, String valor){
         Serial.println("Luces izquierda");
         //# AGREGAR CÓDIGO PARA ENCENDER O APAGAR DIRECCIONAL IZQUIERDA
         if (valor.toInt() == 1) {
+          //si recibe 1, encender las luces
           data = B00000010;
         } else if (valor.toInt() == 0) {
+          //si recibe 0, apagar las luces
           data = B00000000;
         }
         break;
@@ -350,8 +356,10 @@ String implementar(String llave, String valor){
         Serial.println("Luces derechas");
         //# AGREGAR PARA CÓDIGO PARA ENCENDER O APAGAR DIRECCIONAL DERECHA
         if (valor.toInt() == 1) {
+          //si recibe 1, encender las luces
           data = B00000001;
         } else if (valor.toInt() == 0) {
+          //si recibe 0, apagar las luces
           data = B00000000;
         }
         break;
@@ -385,14 +393,15 @@ String implementar(String llave, String valor){
 String getSense(){
   //# EDITAR CÓDIGO PARA LEER LOS VALORES DESEADOS
   int batteryValue = analogRead(A0);
+  //convierte el valor analógico a volatje
   float voltaje = batteryValue * (3.3 / 1023.0);
 
-  //Calcular el nivel de bateria 
-
+  //Calcular el nivel de bateria de 6v
   float batteryLvl = (voltaje / 6.0) * 100.0;
-
+  //Asegurar que esté en el rango de 1 a 100
   batteryLvl = constrain(batteryLvl, 1, 100);
-
+  
+  //Leer el valor analógico del sensor de luz
   int light = analogRead(ldr);
 
   // EQUIVALENTE A UTILIZAR STR.FORMAT EN PYTHON, %d -> valor decimal
