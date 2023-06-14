@@ -322,22 +322,38 @@ String implementar(String llave, String valor){
       case 'f':
         Serial.println("Luces frontales");
         //# AGREGAR CÓDIGO PARA ENCENDER LUCES FRONTALES
-        data = B00001100;
+        if (valor.toInt() == 1) {
+          data = B11000000;
+        } else if (valor.toInt() == 0) {
+          data = B00000000;
+        }
         break;
       case 'b':
         Serial.println("Luces traseras");
         //# AGREGAR CÓDIGO PARA ENCENDER O APAGAR LUCES TRASERAS
-        data = B11000000;
+        if (valor.toInt() == 1) {
+          data = B00001100;
+        } else if (valor.toInt() == 0) {
+          data = B00000000;
+        }
         break;
       case 'l':
         Serial.println("Luces izquierda");
         //# AGREGAR CÓDIGO PARA ENCENDER O APAGAR DIRECCIONAL IZQUIERDA
-        data = B00000010;
+        if (valor.toInt() == 1) {
+          data = B00000010;
+        } else if (valor.toInt() == 0) {
+          data = B00000000;
+        }
         break;
       case 'r':
         Serial.println("Luces derechas");
         //# AGREGAR PARA CÓDIGO PARA ENCENDER O APAGAR DIRECCIONAL DERECHA
-        data = B00000001;
+        if (valor.toInt() == 1) {
+          data = B00000001;
+        } else if (valor.toInt() == 0) {
+          data = B00000000;
+        }
         break;
       /**
        * # AGREGAR CASOS CON EL FORMATO l[caracter]:valor;
@@ -348,6 +364,7 @@ String implementar(String llave, String valor){
         
         break;
     }
+
     //data VARIABLE QUE DEFINE CUALES LUCES SE ENCIENDEN Y CUALES SE APAGAN
     digitalWrite(ab, LOW);
     shiftOut(ab, clk, LSBFIRST, data);
@@ -470,58 +487,34 @@ String especialMovement() {
 }
 
 String infiniteMovement() {
-  int speed = 1000;
+  int speed = 1000; // Velocidad positiva
   int duration = 6000;
-  int zigzagDuration = 1000; // Duración de cada zigzag (izquierda y derecha)
 
-  for (int i = 0; i < 4; i++) { // Realizar 4 ciclos de movimiento
-    // Movimiento en forma de círculo hacia la izquierda
-    digitalWrite(EnB, HIGH);
-    digitalWrite(In3, LOW);
-    digitalWrite(In4, HIGH);
-    digitalWrite(In1, LOW);
-    digitalWrite(In2, HIGH);
-    speed = -speed;
-    analogWrite(EnA, speed);
-    delay(duration);
+  // Mover hacia delante
+  digitalWrite(EnB, HIGH);
+  digitalWrite(In3, LOW);
+  digitalWrite(In4, HIGH);
+  digitalWrite(In1, LOW);
+  digitalWrite(In2, HIGH);
+  analogWrite(EnA, speed);
 
-    // Detener el movimiento circular
-    digitalWrite(EnB, LOW);
-    digitalWrite(In3, LOW);
-    digitalWrite(In4, LOW);
-    digitalWrite(In1, LOW);
-    digitalWrite(In2, LOW);
-    delay(1000); // Esperar 1 segundo en cada cambio de dirección
+  // Realizar el movimiento en forma de ocho una vez
+  // Zigzag hacia la izquierda
+  digitalWrite(In3, HIGH);
+  digitalWrite(In4, LOW);
+  delay(duration);
 
-    // Movimiento en zigzag
-    for (int j = 0; j < 2; j++) { // Realizar 2 ciclos de zigzag (izquierda y derecha)
-      // Zigzag hacia la izquierda
-      digitalWrite(EnB, HIGH);
-      digitalWrite(In3, HIGH);
-      digitalWrite(In4, LOW);
-      digitalWrite(In1, LOW);
-      digitalWrite(In2, HIGH);
-      analogWrite(EnA, speed);
-      delay(zigzagDuration);
+  // Zigzag hacia la derecha
+  digitalWrite(In3, LOW);
+  digitalWrite(In4, HIGH);
+  delay(duration);
 
-      // Zigzag hacia la derecha
-      digitalWrite(EnB, HIGH);
-      digitalWrite(In3, LOW);
-      digitalWrite(In4, HIGH);
-      digitalWrite(In1, LOW);
-      digitalWrite(In2, HIGH);
-      analogWrite(EnA, speed);
-      delay(zigzagDuration);
-    }
-
-    // Detener el movimiento en zigzag
-    digitalWrite(EnB, LOW);
-    digitalWrite(In3, LOW);
-    digitalWrite(In4, LOW);
-    digitalWrite(In1, LOW);
-    digitalWrite(In2, LOW);
-    delay(1000); // Esperar 1 segundo antes de iniciar el siguiente ciclo
-  }
+  // Detener el movimiento y dejar las ruedas en posición central
+  digitalWrite(EnB, LOW);
+  digitalWrite(In3, LOW);
+  digitalWrite(In4, LOW);
+  digitalWrite(In1, LOW);
+  digitalWrite(In2, LOW);
 
   return "";
 }
